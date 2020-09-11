@@ -106,3 +106,29 @@ model.fit(train_process,
           validation_data=(test_process,test_labels),
           callbacks=[callback_path])
 model.save('model_saved/model')
+
+input_dict={'embedding_9_input': valid_process[1:2]}
+with open('sample_instance.json', 'w') as prediction_file:
+    json.dump(input_dict, prediction_file)
+
+def predictClass():
+    try:
+        content= ['User requested to Change Password as expired']
+        result = {}
+        pred_process = tokenizer.texts_to_sequences(content)
+        pred_process = sequence.pad_sequences(pred_process, maxlen=max_len)
+        new_model = tf.keras.models.load_model('model_saved/model')
+        prediction = int(new_model.predict_classes(pred_process))
+
+        for key, value in CLASSES.items():
+            if value==prediction:
+                category=key
+                result["class"] = category
+        result = {"results": result}
+        result = json.dumps(result)
+        return result
+    except Exception as e:
+        return e
+
+if __name__=='__main__':
+	predictClass()
