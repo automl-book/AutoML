@@ -1,5 +1,6 @@
 from google.cloud import automl
-from flask import Flask, request,jsonify
+from flask import Flask, request
+import json
 
 app=Flask(__name__)
 
@@ -10,26 +11,23 @@ def Classification():
         project_id = json_data["project_id"]
         location = json_data["location"]
         model_id = json_data["model_id"]
-        content = json_data["content"]
+        issue_description = json_data["content"]
         result = []
-        prediction_client = automl.PredictionServiceClient()
-        model_full_id = prediction_client.model_path(
-            project_id, location, model_id)
-        text_snippet = automl.types.TextSnippet(
-            content=content,mime_type='text/plain')
-        payload = automl.types.ExamplePayload(text_snippet=text_snippet)
-        response = prediction_client.predict(model_full_id, payload)
-        for annotation_payload in response.payload:
-            classification = {}
-            classification["Class_Name"] = annotation_payload.display_name
-            classification["Class_Score"] = annotation_payload.classification.score
+        prediction_obj = automl.PredictionServiceClient()
+        model_details = prediction_obj.model_path(project_id, location, model_id)
+        issue_snippet = automl.types.TextSnippet(content=issue_description,mime_type='text/plain')
+        payload_data = automl.types.ExamplePayload(text_snippet=issue_snippet)
+        predicted_response = prediction_obj.predict(model_details, payload_data)
+        classification = {}
+        for result_payload in predicted_response.payload:
+            classification["Class_Name"] = result_payload.display_name
+            classification["Class_Score"] = result_payload.classification.score
             result.append(classification)
         result = {"results" : result}
-        return jsonify(result)
+        result = json.dumps(result)
+        return result
     except Exception as e:
         return {"Error": str(e)}
 
 if __name__ == "__main__" :
     app.run(port="5000")
-
-
