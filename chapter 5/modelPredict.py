@@ -34,3 +34,11 @@ model = LogisticRegressionModel.load("gs://automl-1/model")
 predictions = model.transform(df)
 predictions.select("prediction","probability").show(truncate=False)
 predictions.show()
+
+
+# To dump prediction result as csv into Google Cloud Storage bucket
+
+predictions.withColumn("probability", col("probability").cast("string")).select("ID","prediction","probability").write.csv('gs://automl-1/prediction')
+
+
+
