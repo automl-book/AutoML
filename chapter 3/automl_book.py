@@ -1,8 +1,8 @@
 from google.cloud import automl
 
-project_id = ‘automlgcp’
-model_id = ' 'TCN14567890876540944'
-issue_description = "System Utilization is high on server. Please Suggest "
+project_id = 'automlgcp'
+model_id = 'TCN14567890876540944'
+issue_description = "System Utilization is high on server. Please Suggest"
 
 def classification():
 
