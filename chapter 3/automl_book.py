@@ -9,10 +9,10 @@ def classification():
   prediction_obj = automl.PredictionServiceClient()
 
   # Retrieves path of the model
-  model_details = prediction_obj.model_path(project_id, 'us-central1', model_id)
-  issue_snippet = automl.types.TextSnippet(content=issue_description,mime_type='text/plain')  
-  payload_data = automl.types.ExamplePayload(text_snippet=issue_snippet)
-  predicted_response = prediction_obj.predict(model_details, payload_data)
+  model_details = automl.AutoMlClient.model_path(project_id, 'us-central1', model_id)
+  issue_snippet = automl.TextSnippet(content=issue_description,mime_type='text/plain')  
+  payload_data = automl.ExamplePayload(text_snippet=issue_snippet)
+  predicted_response = prediction_obj.predict(name=model_details, payload=payload_data)
   for result_payload in predicted_response.payload:
     print(u'Predicted class name: {}'.format(result_payload.display_name))
     print(u'Predicted class score: {}'.format(result_payload.classification.score))
