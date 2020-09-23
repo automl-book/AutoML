@@ -14,10 +14,10 @@ def predictSentiment():
         result = []
         sentiment_prediction_model = automl.PredictionServiceClient()
         # Retrieves path of the model
-        model_details = sentiment_prediction_model.model_path(project_id, 'us-central1', model_id)
-        sentence_snippet = automl.types.TextSnippet( content=sentence,mime_type='text/plain')  
-        payload_data = automl.types.ExamplePayload(text_snippet=sentence_snippet)
-        predicted_response=sentiment_prediction_model.predict (model_details,    payload_data)
+        model_details = automl.AutoMlClient.model_path(project_id, 'us-central1', model_id)
+        sentence_snippet = automl.TextSnippet( content=sentence,mime_type='text/plain')  
+        payload_data = automl.ExamplePayload(text_snippet=sentence_snippet)
+        predicted_response=sentiment_prediction_model.predict (name=model_details,    payload=payload_data)
         for payload_result in predicted_response.payload:
           result= "Predicted sentiment score: {}"   .format(payload_result.text_sentiment.sentiment)
         return (result)
