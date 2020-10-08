@@ -34,13 +34,12 @@ selectedCols = ['label', 'features'] + cols
 df = df.select(selectedCols)
 
 train, test = df.randomSplit([0.8, 0.3], seed = 2018)
-from pyspark.ml.classification import LogisticRegression
 logistic = LogisticRegression(featuresCol = 'features', labelCol = 'label', maxIter=10)
 model_instance = logistic.fit(train)
 model_instance.write().save("gs://automl-1//model")
 
 
-// To generate predictions from model
+# To generate predictions from model
 
 predictions = model_instance.transform(test)
 predictions.select("payment","prediction","probability").show(truncate=False)
